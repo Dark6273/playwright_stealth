@@ -1,27 +1,36 @@
-if (!window.chrome) {
+// https://github.com/berstend/puppeteer-extra/blob/c44c8bb0224c6bba2554017bfb9d7a1d0119f92f/packages/puppeteer-extra-plugin-stealth/evasions/chrome.csi/index.js
+
+() => {
+  if (!window.chrome) {
     // Use the exact property descriptor found in headful Chrome
     // fetch it via `Object.getOwnPropertyDescriptor(window, 'chrome')`
     Object.defineProperty(window, 'chrome', {
-        writable: true,
-        enumerable: true,
-        configurable: false, // note!
-        value: {} // We'll extend that later
+      writable: true,
+      enumerable: true,
+      configurable: false, // note!
+      value: {} // We'll extend that later
     })
-}
+  }
 
-// Check if we're running headful and don't need to mock anything
-// Check that the Navigation Timing API v1 is available, we need that
-if (!('csi' in window.chrome) && (window.performance || window.performance.timing)) {
-    const {csi_timing} = window.performance
+  // That means we're running headful and don't need to mock anything
+  if ('csi' in window.chrome) {
+    return // Nothing to do here
+  }
 
-    log.info('loading chrome.csi.js')
-    window.chrome.csi = function () {
-        return {
-            onloadT: csi_timing.domContentLoadedEventEnd,
-            startE: csi_timing.navigationStart,
-            pageT: Date.now() - csi_timing.navigationStart,
-            tran: 15 // Transition type or something
-        }
+  // Check that the Navigation Timing API v1 is available, we need that
+  if (!window.performance || !window.performance.timing) {
+    return
+  }
+
+  const { timing } = window.performance
+
+  window.chrome.csi = function () {
+    return {
+      onloadT: timing.domContentLoadedEventEnd,
+      startE: timing.navigationStart,
+      pageT: Date.now() - timing.navigationStart,
+      tran: 15 // Transition type or something
     }
-    utils.patchToString(window.chrome.csi)
+  }
+  utils.patchToString(window.chrome.csi)
 }

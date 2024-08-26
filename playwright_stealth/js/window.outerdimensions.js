@@ -1,12 +1,12 @@
-'use strict'
+// https://github.com/berstend/puppeteer-extra/blob/c44c8bb0224c6bba2554017bfb9d7a1d0119f92f/packages/puppeteer-extra-plugin-stealth/evasions/window.outerdimensions/index.js
 
-try {
-    if (!!window.outerWidth && !!window.outerHeight) {
-        const windowFrame = 85 // probably OS and WM dependent
-        window.outerWidth = window.innerWidth
-        console.log(`current window outer height ${window.outerHeight}`)
-        window.outerHeight = window.innerHeight + windowFrame
-        console.log(`new window outer height ${window.outerHeight}`)
+() => {
+  try {
+    if (window.outerWidth && window.outerHeight) {
+      return // nothing to do here
     }
-} catch (err) {
+    const windowFrame = 85 // probably OS and WM dependent
+    window.outerWidth = window.innerWidth
+    window.outerHeight = window.innerHeight + windowFrame
+  } catch (err) { }
 }

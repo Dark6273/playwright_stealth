@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Tuple, Optional, Dict
 
 import pkg_resources
+from fake_useragent import UserAgent
 from playwright.async_api import Page as AsyncPage
 from playwright.sync_api import Page as SyncPage
 
@@ -17,18 +18,18 @@ SCRIPTS: Dict[str, str] = {
     'chrome_csi': from_file('chrome.csi.js'),
     'chrome_app': from_file('chrome.app.js'),
     'chrome_runtime': from_file('chrome.runtime.js'),
-    'chrome_load_times': from_file('chrome.load.times.js'),
-    'chrome_hairline': from_file('chrome.hairline.js'),
-    'generate_magic_arrays': from_file('generate.magic.arrays.js'),
+    'chrome_load_times': from_file('chrome.loadTimes.js'),
+    # 'chrome_hairline': from_file('chrome.hairline.js'),
+    # 'generate_magic_arrays': from_file('generate.magic.arrays.js'),
     'iframe_content_window': from_file('iframe.contentWindow.js'),
     'media_codecs': from_file('media.codecs.js'),
     'navigator_vendor': from_file('navigator.vendor.js'),
     'navigator_plugins': from_file('navigator.plugins.js'),
     'navigator_permissions': from_file('navigator.permissions.js'),
     'navigator_languages': from_file('navigator.languages.js'),
-    'navigator_platform': from_file('navigator.platform.js'),
-    'navigator_user_agent': from_file('navigator.userAgent.js'),
-    'navigator_hardware_concurrency': from_file('navigator.hardwareConcurrency.js'),
+    # 'navigator_platform': from_file('navigator.platform.js'),
+    # 'navigator_user_agent': from_file('navigator.userAgent.js'),
+    # 'navigator_hardware_concurrency': from_file('navigator.hardwareConcurrency.js'),
     'outerdimensions': from_file('window.outerdimensions.js'),
     'utils': from_file('utils.js'),
     'webdriver': from_file('navigator.webdriver.js'),
@@ -66,12 +67,12 @@ class StealthConfig:
     navigator_hardware_concurrency: int = 4
     navigator_languages: bool = True
     navigator_permissions: bool = True
-    navigator_platform: bool = True
+    navigator_platform: bool = False
     navigator_plugins: bool = True
-    navigator_user_agent: bool = True
+    navigator_user_agent: bool = False
     navigator_vendor: bool = True
     outerdimensions: bool = True
-    hairline: bool = True
+    hairline: bool = False
 
     # options
     vendor: str = 'Intel Inc.'
@@ -97,7 +98,7 @@ class StealthConfig:
         yield f'const opts = {opts}'
         # init utils and generate_magic_arrays helper
         yield SCRIPTS['utils']
-        yield SCRIPTS['generate_magic_arrays']
+        # yield SCRIPTS['generate_magic_arrays']
 
         if self.chrome_app:
             yield SCRIPTS['chrome_app']

@@ -1,14 +1,5 @@
-// this is close to the most accurate way to emulate this: https://stackoverflow.com/a/69533548
-Object.defineProperty(Object.getPrototypeOf(navigator), 'webdriver', {
-    set: undefined,
-    enumerable: true,
-    configurable: true,
-    get: new Proxy(
-        Object.getOwnPropertyDescriptor(Object.getPrototypeOf(navigator), 'webdriver').get,
-        { apply: (target, thisArg, args) => {
-            // emulate getter call validation
-            Reflect.apply(target, thisArg, args);
-            return false;
-        }}
-    )
-});
+// https://github.com/berstend/puppeteer-extra/blob/c44c8bb0224c6bba2554017bfb9d7a1d0119f92f/packages/puppeteer-extra-plugin-stealth/evasions/navigator.webdriver/index.js
+
+() => {
+  delete Object.getPrototypeOf(navigator).webdriver
+}
